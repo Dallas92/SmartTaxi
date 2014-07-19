@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTaxi.Models", "SmartTaxi.Models\SmartTaxi.Models.csproj", "{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTaxi.DAL", "SmartTaxi.DAL\SmartTaxi.DAL.csproj", "{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTaxi.iOS", "SmartTaxi.iOS\SmartTaxi.iOS.csproj", "{9A53AFAB-C520-406D-949A-FB46730594B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.AppStore|iPhone.ActiveCfg = Release|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.AppStore|iPhone.Build.0 = Release|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Release|iPhone.Build.0 = Release|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{0DC2A870-5FB5-41C7-BE2A-AE5E77CA7AEA}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.AppStore|iPhone.ActiveCfg = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.AppStore|iPhone.Build.0 = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Release|iPhone.Build.0 = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Debug|iPhone.Build.0 = Debug|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Release|iPhone.ActiveCfg = Release|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Release|iPhone.Build.0 = Release|iPhone
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{9A53AFAB-C520-406D-949A-FB46730594B4}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = SmartTaxi.iOS\SmartTaxi.iOS.csproj
+	EndGlobalSection
+EndGlobal
