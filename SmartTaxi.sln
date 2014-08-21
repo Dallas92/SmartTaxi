@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTaxi.DAL", "SmartTaxi.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTaxi.iOS", "SmartTaxi.iOS\SmartTaxi.iOS.csproj", "{9A53AFAB-C520-406D-949A-FB46730594B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartTaxi.Android", "SmartTaxi.Android\SmartTaxi.Android.csproj", "{96F884B5-933F-4DBA-9E7D-65388829B9C0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
@@ -43,18 +41,6 @@ Global
 		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Release|iPhone.Build.0 = Release|Any CPU
 		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{4F24D96D-9DCA-4DF0-8980-D46815CACDB2}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.AppStore|iPhone.ActiveCfg = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.AppStore|iPhone.Build.0 = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Release|iPhone.Build.0 = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{96F884B5-933F-4DBA-9E7D-65388829B9C0}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{9A53AFAB-C520-406D-949A-FB46730594B4}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
 		{9A53AFAB-C520-406D-949A-FB46730594B4}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
 		{9A53AFAB-C520-406D-949A-FB46730594B4}.AppStore|iPhone.ActiveCfg = AppStore|iPhone

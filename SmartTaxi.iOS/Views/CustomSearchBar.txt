@@ -1,0 +1,67 @@
+﻿using System;
+using MonoTouch.UIKit;
+using System.Drawing;
+using MonoTouch.Foundation;
+
+namespace Cavi.iOS
+{
+	[Register("CustomSearchBar")]
+	public class CustomSearchBar:UIView
+	{
+		public UITextField SearchTextField;
+		public UIImageView SearchImageView;
+		private string Placeholder;
+
+		public CustomSearchBar (RectangleF _frame)
+		{
+			this.Frame = _frame;
+
+			this.Placeholder = "Поиск по названию";
+
+			this.SearchTextField = new UITextField (new RectangleF (0, 0, _frame.Width, _frame.Height)){
+				TextColor = AppDelegate.ColorGreen,
+				TintColor = AppDelegate.ColorGreen,
+				LeftView = new UIView(new RectangleF(0,0,55,0)),
+				LeftViewMode = UITextFieldViewMode.Always,
+				Text = this.Placeholder,
+				AutocorrectionType = UITextAutocorrectionType.No,
+				ReturnKeyType = UIReturnKeyType.Search,
+				Font = UIFont.FromName(AppDelegate.FontName,16f),
+				ShouldReturn = txt => txt.ResignFirstResponder()
+			};
+
+			this.SearchTextField.Layer.CornerRadius = 10;
+			this.SearchTextField.Layer.BorderWidth = 1f;
+			this.SearchTextField.Layer.BorderColor = UIColor.White.CGColor;
+			this.SearchTextField.Layer.BackgroundColor = UIColor.White.CGColor;
+
+			this.SearchTextField.EditingDidBegin += (sender, e) => {
+				if((sender as UITextField).Text.Equals(this.Placeholder)){
+					(sender as UITextField).Text = string.Empty;
+				}
+			};
+			this.SearchTextField.EditingDidEnd += (sender, e) => {
+				if(string.IsNullOrEmpty((sender as UITextField).Text)){
+					(sender as UITextField).Text = this.Placeholder;
+					this.SearchTextField.TextColor = AppDelegate.ColorGreen;
+				}else{
+					this.SearchTextField.TextColor = AppDelegate.ColorGray;
+				}
+			};
+
+			this.SearchTextField.EditingChanged += (sender, e) => {
+				this.SearchTextField.TextColor = AppDelegate.ColorGray;
+			};
+
+			this.SearchImageView = new UIImageView (new RectangleF (15, 10, 30, 30)){
+				ContentMode = UIViewContentMode.ScaleAspectFill,
+				Image= UIImage.FromBundle ("Pages/Search/search.png")
+			};
+
+			this.AddSubview (SearchTextField);
+			this.AddSubview (SearchImageView);
+		}
+
+	}
+}
+

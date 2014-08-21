@@ -18,23 +18,25 @@ namespace SmartTaxi.iOS
 
 		public override void ViewWillAppear (bool animated)
 		{
-			this.NavigationController.NavigationBar.Hidden = true;
+			//this.NavigationController.NavigationBar.Hidden = true;
 		}
 
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+			this.NavigationController.NavigationBar.Hidden = true;
 
 			this.scroll.DecelerationEnded += this.scroll_DecelerationEnded;
 			this.pager.ValueChanged += this.pager_ValueChanged;
 
-			this.scroll.PagingEnabled = true;
 			this.scroll.ShowsVerticalScrollIndicator = false;
 			this.scroll.ShowsHorizontalScrollIndicator = false;
 
-			this.scroll.Frame = new RectangleF (0, 80, this.View.Frame.Width, this.View.Frame.Height-100);
 			RectangleF pageFrame = this.scroll.Frame;
-			this.scroll.ContentSize = new SizeF (pageFrame.Width * 4, pageFrame.Height);
+			//this.scroll.Frame = new RectangleF (0, 0, this.View.Frame.Width, this.View.Frame.Height-94);
+			this.scroll.ContentSize = new SizeF (pageFrame.Width * 1, pageFrame.Height);
+
+			this.scroll.ContentInset = new UIEdgeInsets (47, 0, 0, 0);
 
 			this.pages = new UIImageView[4];
 

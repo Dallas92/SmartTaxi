@@ -45,7 +45,13 @@
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: Daulet Bulegenov (XBMD8AK7F6)</CodesignKey>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
+    <CodesignProvision>da475aa7-00b6-4aad-baa6-e5a46ab0d1fa</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -90,6 +96,28 @@
     <Reference Include="monotouch" />
     <Reference Include="System.Data" />
     <Reference Include="Mono.Data.Sqlite" />
+    <Reference Include="GoogleMaps">
+      <HintPath>..\Components\googlemapsios-1.8.1\lib\ios\GoogleMaps.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp.MonoTouch">
+      <HintPath>..\Components\restsharp-104.4.0\lib\ios\RestSharp.MonoTouch.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Components\azure-mobile-services-1.2.3\lib\ios\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\Components\azure-mobile-services-1.2.3\lib\ios\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\Components\azure-mobile-services-1.2.3\lib\ios\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Mobile.Ext, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\Components\azure-mobile-services-1.2.3\lib\ios\Microsoft.WindowsAzure.Mobile.Ext.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Mobile, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\Components\azure-mobile-services-1.2.3\lib\ios\Microsoft.WindowsAzure.Mobile.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-568h%402x.png" />
@@ -103,10 +131,42 @@
     <BundleResource Include="Resources\Instructions\instruction2.png" />
     <BundleResource Include="Resources\Instructions\instruction3.png" />
     <BundleResource Include="Resources\Instructions\instruction4.png" />
+    <BundleResource Include="Resources\Common\ok.png" />
+    <BundleResource Include="Resources\Common\close.png" />
+    <BundleResource Include="Resources\car.jpg" />
+    <BundleResource Include="Resources\Map\check.png" />
+    <BundleResource Include="Resources\Map\from.png" />
+    <BundleResource Include="Resources\Map\taxi.png" />
+    <BundleResource Include="Resources\Map\to.png" />
+    <BundleResource Include="Resources\Map\window-big.png" />
+    <BundleResource Include="Resources\Map\window-small.png" />
+    <BundleResource Include="Resources\Menu\forget%402x.png" />
+    <BundleResource Include="Resources\Menu\register%402x.png" />
+    <BundleResource Include="Resources\Menu\order-accepted%402x.png" />
+    <BundleResource Include="Resources\Menu\order-cancel%402x.png" />
+    <BundleResource Include="Resources\Menu\order-waiting%402x.png" />
+    <BundleResource Include="Resources\Menu\orders%402x.png" />
+    <BundleResource Include="Resources\Menu\money%402x.png" />
+    <BundleResource Include="Resources\Menu\order-new%402x.png" />
+    <BundleResource Include="Resources\Icon.png" />
+    <BundleResource Include="Resources\Icon%402x.png" />
+    <BundleResource Include="Resources\Icon-60%402x.png" />
+    <BundleResource Include="Resources\Icon-Small.png" />
+    <BundleResource Include="Resources\Icon-Small%402x.png" />
+    <BundleResource Include="Resources\Icon-Small-40%402x.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\Default.png" />
+    <BundleResource Include="Resources\Fonts\RobotoCondensed-Light.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Common\back.png" />
+    <BundleResource Include="Resources\Common\star.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="Views\CustomSearchBar.txt" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -121,13 +181,51 @@
     </Compile>
     <Compile Include="DataSource\MenuDataSource.cs" />
     <Compile Include="Models\MenuItem.cs" />
-    <Compile Include="ViewControllers\InstructionsViewController.cs" />
-    <Compile Include="ViewControllers\InstructionsViewController.designer.cs">
+    <Compile Include="SQLite\SQLiteHelper.cs" />
+    <Compile Include="ViewControllers\TaxistsViewController.cs" />
+    <Compile Include="ViewControllers\TaxistsViewController.designer.cs">
+      <DependentUpon>TaxistsViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\AuthViewController.cs" />
+    <Compile Include="ViewControllers\AuthViewController.designer.cs">
+      <DependentUpon>AuthViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AuthLoginView.cs" />
+    <Compile Include="Views\RestorePassView.cs" />
+    <Compile Include="Views\RegistrationView.cs" />
+    <Compile Include="Style\UILabelInitializer.cs" />
+    <Compile Include="Style\UITextFieldInitializer.cs" />
+    <Compile Include="Style\UIButtonInitializer.cs" />
+    <Compile Include="Views\FromView.cs" />
+    <Compile Include="ViewControllers\Taxi\InstructionsViewController.cs" />
+    <Compile Include="ViewControllers\Taxi\InstructionsViewController.designer.cs">
       <DependentUpon>InstructionsViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="SQLite\SQLiteHelper.cs" />
+    <Compile Include="ViewControllers\Client\CommentViewController.cs" />
+    <Compile Include="ViewControllers\Client\CommentViewController.designer.cs">
+      <DependentUpon>CommentViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Client\FromViewController.cs" />
+    <Compile Include="ViewControllers\Client\FromViewController.designer.cs">
+      <DependentUpon>FromViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Client\ToViewController.cs" />
+    <Compile Include="ViewControllers\Client\ToViewController.designer.cs">
+      <DependentUpon>ToViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Client\WhenViewController.cs" />
+    <Compile Include="ViewControllers\Client\WhenViewController.designer.cs">
+      <DependentUpon>WhenViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PeriodPickerView.cs" />
+    <Compile Include="ViewControllers\Taxi\ProfileViewController.cs" />
+    <Compile Include="ViewControllers\Taxi\ProfileViewController.designer.cs">
+      <DependentUpon>ProfileViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Location\LocationManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Views\" />
     <Folder Include="ViewControllers\" />
@@ -135,6 +233,13 @@
     <Folder Include="Resources\Menu\" />
     <Folder Include="Models\" />
     <Folder Include="Resources\Instructions\" />
+    <Folder Include="Resources\Common\" />
+    <Folder Include="Style\" />
+    <Folder Include="Resources\Map\" />
+    <Folder Include="ViewControllers\Client\" />
+    <Folder Include="ViewControllers\Taxi\" />
+    <Folder Include="Resources\Fonts\" />
+    <Folder Include="Location\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SmartTaxi.DAL\SmartTaxi.DAL.csproj">
@@ -148,5 +253,19 @@
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="MainStoryboard.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="googlemapsios">
+      <Version>1.8.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="restsharp">
+      <Version>104.4.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="azure-mobile-services">
+      <Version>1.2.3</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>
