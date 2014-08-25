@@ -37,6 +37,8 @@
     <Compile Include="GoogleModels.cs" />
     <Compile Include="GoogleMap.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="LoginData.cs" />
+    <Compile Include="Meta.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

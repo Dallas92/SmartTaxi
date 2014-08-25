@@ -13,6 +13,7 @@ namespace SmartTaxi.DAL
 {
 	public class APIHelper
 	{
+		//private static string baseUrl = "http://smart.wk/";
 		private static string baseUrl = "http://smarttaxi.1gb.ru/";
 		private static RestClient restClient = null;
 		public static string taxiId;

@@ -23,54 +23,55 @@ namespace SmartTaxi.iOS
 	[Register ("AppDelegate")]
 	public partial class AppDelegate : UIApplicationDelegate
 	{
+		//App objects
 		public UIWindow window;
 		public static UIStoryboard Storyboard = UIStoryboard.FromName ("MainStoryboard", null);
 		public static UIViewController initialViewController;
+		public static UIViewController currentViewController;
 
 		//Setting Keys
 		public const string CLIENT_ID_KEY = "CLIENT_ID";
+		public const string CLIENT_PHONE_KEY = "CLIENT_PHONE";
+		public static string CityId = "447055bf-db72-4313-af71-e7a84ae2ccd3";
 
 		//Services Keys
-		public const string MapsApiKey = "AIzaSyBEBbO1m-vDH7cEUP5cqH04HdyXbQKZCIQ";
+		public const string MapsApiKey = "AIzaSyA5HVvoDnP9SR0DOtyvMCR94FI-srOs36o";
 
 		//Global Fonts
 		public static string FontRobotoCondensedLight = "RobotoCondensed-Light";
 
-		//In memory Data
+		//Global Colors
+		public static UIColor AppColorYellow = UIColor.FromRGB (255, 216, 0);
+		public static UIColor AppColorHalfYellow = UIColor.FromRGB (255, 247, 204);
+
+		//Push Notifications
 		public static MobileServiceClient MobileService = new MobileServiceClient(
 			"https://smarttaxi.azure-mobile.net/",
 			"TePRzrBubdDeznZltpRKkPKRLQqLdD22"
 		);
-		public string DeviceToken { get; set; }
 
-		public static APIHelper API = new APIHelper ();
-		public static string ClientId;
-		public static string TaxiId{ get; set; }
-		public static bool Flag {get;set;}
-
-
-		public static UIColor AppColorYellow = UIColor.FromRGB (255, 216, 0);
-		public static UIColor AppColorHalfYellow = UIColor.FromRGB (255, 247, 204);
-
-		public Taxi taxi = new Taxi {
-			TaxtFirstname = "Максим",
-			TaxiLastname = "Чужой",
-			TaxiPhone = "77713241540",
-			TaxiPassword = "пароль",
-			TaxiMarka = "Audi",
-			TaxiModel = "A6",
-			TaxiCarnumber = "x666ASP",
-			TaxiColor = "4",
-			City = new City{ CityId = "447055bf-db72-4313-af71-e7a84ae2ccd3", CityName = "Костанай" }
-		};
-
+		//Background Location Manager
 		public static LocationManager Manager { get; set;}
 
+		//Static Data
+		public static APIHelper API = new APIHelper ();
+		public static string ClientId{ get; set; }
+		public static string TaxiId{ get; set; }
+		public string DeviceToken { get; set; }
+		public static Order Order{ get; set; }
+		public static Taxi Taxi{get;set;}
+		public static bool isTaxi{get;set;}
+		public static List<Order> Orders{get;set;}
+		public static List<Taxi> Drivers{get;set;}
+		public static CLLocation MyLocation{ get; set; }
 
-		public AppDelegate(){
-			//ParseClient.Initialize("xuVvtLuQYjCtqBwtSZCDrVbeyDbQJA6pCKBaetfp", "Z2No9yfa7CqmwSL6IyYANutXpQt1RUNZahturbpk");
-		}
-
+		#region Temporary data
+		public bool Test{ get; set; }
+		public bool Flag {get;set;}
+		public bool Flag2 = false;
+		public bool Flag3 {get;set;}
+		public string OrderId;
+		#endregion
 
 		public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
 		{
@@ -82,44 +83,25 @@ namespace SmartTaxi.iOS
 			}
 			DeviceToken = trimmedDeviceToken;
 
-
-			var tb = MobileService.GetTable<Device>();
-			tb.InsertAsync (new Device(){DeviceType="iOS", DeviceToken = ((AppDelegate)UIApplication.SharedApplication.Delegate).DeviceToken.Trim()});
+			//MobileService.GetTable<Device>().InsertAsync (new Device(){DeviceType="iOS", DeviceToken = DeviceToken.Trim().Replace(" ","")});
 		}
 
+		#region unused
 		public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
 		{
 			Debug.WriteLine(userInfo.ToString());
 			NSObject inAppMessage;
 
 			bool success = userInfo.TryGetValue(new NSString("inAppMessage"), out inAppMessage);
-
-			if (success)
-			{
-				var alert = new UIAlertView("Got push notification", inAppMessage.ToString(), null, "OK", null);
-				alert.Show();
-			}
 		}
-
-		public override void FailedToRegisterForRemoteNotifications (UIApplication application , NSError error)
-		{
-			new UIAlertView("Error registering push notifications", error.LocalizedDescription, null, "OK", null).Show();
-		}
-
-		public override void DidReceiveRemoteNotification (UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
-		{
-			Console.WriteLine ("PUSH" + userInfo.ToString());
-		}
+		#endregion
 
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
 			CurrentPlatform.Init ();
 
-
-			UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge;
-			UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
-
-
+			//UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge;
+			//UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
 
 			#region unused
 			// screen subscribes to the location changed event
@@ -138,70 +120,111 @@ namespace SmartTaxi.iOS
 
 			InitClientId ();
 
+			isTaxi = true;
+			Test = true;
+			Order = new Order ();
+
 			Manager = new LocationManager();
-			Manager.LocationUpdated += HandleLocationChanged;
+			if (Test) {
+				Manager.LocationUpdated += HandleLocationChanged;
+			}
 			Manager.StartLocationUpdates();
 
 			MapServices.ProvideAPIKey (MapsApiKey);
 
-			string name = AppDelegate.API.Cities.GetCityNameByLocation ("53.209563", "63.625946");
-
-			Flag = false;
-//			AppDelegate.API.Clients.Connect (AppDelegate.ClientId.ToString()); // connect client
-//			string id = AppDelegate.API.Orders.Create (new Order {
-//				ClientId = AppDelegate.ClientId,
-//				FromAddress = "Откуда",
-//				ToAddress = "Куда",
-//				FromLocation = "52.123124124, 75.123124124",
-//				ToLocation = "52.123124124, 75.123124124",
-//				Comment = "Голова болит помАгите",
-//				Minutes = "60",
-//				CityId = AppDelegate.API.Cities.GetCityByName (name)
-//			});
-//			AppDelegate.API.Taxi.Login (taxi.TaxiPhone, taxi.TaxiPassword); //login taxist
-			//AppDelegate.API.Taxi.SetOnline (location.Coordinate.Latitude + "," + location.Coordinate.Longitude);
+			if (Test) {
+				AppDelegate.API.Clients.Connect (AppDelegate.ClientId.ToString ()); 
+//				OrderId = AppDelegate.API.Orders.Create (new Order {
+//					ClientId = AppDelegate.ClientId,
+//					FromAddress = AppDelegate.Order.FromAddress,
+//					ToAddress = AppDelegate.Order.ToAddress,
+//					FromLocation = "52.123124124, 75.123124124",
+//					ToLocation = "52.123124124, 75.123124124",
+//					Comment = AppDelegate.Order.Comment,
+//					Minutes = AppDelegate.Order.Minutes,
+//					CityId = "447055bf-db72-4313-af71-e7a84ae2ccd3"
+//				});
+			}
 
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
 			initialViewController = Storyboard.InstantiateInitialViewController () as UIViewController;
-
 			window.RootViewController = initialViewController;
 			window.MakeKeyAndVisible ();
-
 			return true;
 		}
 
 		public void HandleLocationChanged (object sender, LocationUpdatedEventArgs e)
 		{
-			// Handle foreground updates
-//			CLLocation location = e.Location;
-//
-//			DateTime dt = DateTime.Now;
-//
-//			if (!string.IsNullOrEmpty(APIHelper.taxiId)) {
-//
+			MyLocation = e.Location;
+
+			if (!string.IsNullOrEmpty(APIHelper.taxiId)) {
+
 //				if (!Flag) {
-//					Console.WriteLine ("I'm here at " + dt.ToString ());
-//					AppDelegate.API.Taxi.SetOnline (location.Coordinate.Latitude + "," + location.Coordinate.Longitude);
+//					Console.WriteLine ("I'm here at " + DateTime.Now.ToString ());
+//					AppDelegate.API.Taxi.SetOnline ("55.123124124" + ", " + "70.123124124");
+//
+
+//
 //					Flag = true;
 //				}
+
+				if (DateTime.Now.Second % 10 == 0) {
+
+					if (!AppDelegate.isTaxi) {
+						//if (!string.IsNullOrEmpty (OrderId)) {
+							Console.WriteLine ("Processing orders " + DateTime.Now.ToString ());
+							//AppDelegate.Drivers = AppDelegate.API.Orders.Processing (OrderId, "447055bf-db72-4313-af71-e7a84ae2ccd3");
+							
+						AppDelegate.Drivers = new List<Taxi> {
+							new Taxi{TaxiId="1", TaxiLocation="53.218316, 63.630535", TaxiLastname="Пришвин",TaxtFirstname ="Сергей", RatingCount = 5, Rating = 5, TaxiMarka="KIA", TaxiModel = "Sorento", TaxiCarnumber = "123AAA02", TaxiColor="Серебристый", TaxiPhoto="http://avtomasta.ru/wp-content/uploads/2013/12/1.jpg"},
+							new Taxi{TaxiId="2",TaxiLocation="53.223249, 63.643839", TaxiLastname="Пришвин",TaxtFirstname ="Сергей", RatingCount = 5, Rating = 5, TaxiMarka="KIA", TaxiModel = "Sorento", TaxiCarnumber = "123AAA02", TaxiColor="Серебристый", TaxiPhoto="http://avtomasta.ru/wp-content/uploads/2013/12/1.jpg"},
+							new Taxi{TaxiId="3",TaxiLocation="53.212508, 63.615343", TaxiLastname="Пришвин",TaxtFirstname ="Сергей", RatingCount = 5, Rating = 5, TaxiMarka="KIA", TaxiModel = "Sorento", TaxiCarnumber = "123AAA02", TaxiColor="Серебристый", TaxiPhoto="http://avtomasta.ru/wp-content/uploads/2013/12/1.jpg"},
+						};
+
+						if (currentViewController.GetType () == typeof(ChooseTaxiViewController)) {
+							(currentViewController as ChooseTaxiViewController).ShowDrivers ();
+						}
+
+
+//							if (drivers.Count > 0) {
+//								Console.WriteLine ("Found " + drivers.Count + " drivers");
+//								var driverWithPrice = drivers.FirstOrDefault (a => a.price > 0);
+//								if (driverWithPrice != null && Flag2) {
+//									Console.WriteLine ("Accepting 1 order at: " + DateTime.Now.ToString ());
+//									AppDelegate.API.Clients.Accept (OrderId, driverWithPrice.TaxiId, "77713241546", 1);
+//								}
+//							} 
+						//}
+					}
+
+					if (AppDelegate.isTaxi) {
+						Console.WriteLine ("Get my orders at " + DateTime.Now.ToString ());
+						AppDelegate.Orders = AppDelegate.API.Taxi.GetMyOrders ();
+
+//						var count = orders.Count;
+//						if (count > 0) {
+//							Console.WriteLine ("Found " + count + " orders");
+//							if (!Flag2) {
+//								var order = orders.FirstOrDefault ();
+//								AppDelegate.API.Taxi.SetPrice (order.OrderId, 500);
+//								Console.WriteLine ("Set price for order at: " + DateTime.Now.ToString ());
 //
-//				string name = AppDelegate.API.Cities.GetCityNameByLocation ("53.209563", "63.625946");
-//
-//				if (dt.Second % 5 == 0) {
-//					Console.WriteLine ("Get my orders at " + dt.ToString ());
-//					var orders = AppDelegate.API.Taxi.GetMyOrders (0);
-//					var count = orders.Count;
-//					if (count > 0) {
-//						Console.WriteLine ("Found " + count + " orders");
-//					} else {
-//					}
-//				}
-//				else if (dt.Second % 29 == 0) {
-//					Console.WriteLine ("I'm here at " + dt.ToString ());
-//					AppDelegate.API.Taxi.SetOnline (location.Coordinate.Latitude + "," + location.Coordinate.Longitude);
-//				}
-//			}
+//								//AppDelegate.API.Taxi.CancelOrder (order.OrderId);
+//								//Console.WriteLine ("Cancelled order at: " + DateTime.Now.ToString());
+//								Flag2 = true;
+//							}
+//						} 
+					}
+				}
+				if (DateTime.Now.Second % 30 == 0) {
+					if (AppDelegate.isTaxi) {
+						Console.WriteLine ("I'm here at " + DateTime.Now.ToString ());
+						//AppDelegate.API.Taxi.SetOnline (location.Coordinate.Latitude.ToString().Replace(",",".") + ", " + location.Coordinate.Longitude.ToString().Replace(",","."));
+						AppDelegate.API.Taxi.SetOnline ("55.123124124" + ", " + "70.123124124");
+					}
+				}
+			}
 		}
 
 		//move to helper class
@@ -212,7 +235,7 @@ namespace SmartTaxi.iOS
 			v.AddGestureRecognizer (gestureRecognizer);
 		}
 
-		public static void InitClientId(){
+		public void InitClientId(){
 			if (!string.IsNullOrEmpty (AppDelegate.AppSettingGet (CLIENT_ID_KEY))) {
 				ClientId = AppDelegate.AppSettingGet (CLIENT_ID_KEY);
 			} else {
@@ -235,15 +258,6 @@ namespace SmartTaxi.iOS
 			NSUserDefaults.StandardUserDefaults.Synchronize ();
 		}
 	
-		#region unused
-		public override void WillEnterForeground (UIApplication application)
-		{
-			Console.WriteLine ("App will enter foreground");
-		}
-
-		// Runs when the activation transitions from running in the background to
-		// being the foreground application.
-		// Also gets hit on app startup
 		public override void OnActivated (UIApplication application)
 		{
 			Console.WriteLine ("App is becoming active");
@@ -258,8 +272,12 @@ namespace SmartTaxi.iOS
 		{
 			Console.WriteLine ("App entering background state.");
 			Console.WriteLine ("Now receiving location updates in the background");
-		} 
-		#endregion
+		}
+
+		public override void WillEnterForeground (UIApplication application)
+		{
+			Console.WriteLine ("App will enter foreground");
+		}
 	
 		#region old parse
 		//		public async override void RegisteredForRemoteNotifications (UIApplication application, NSData deviceToken)

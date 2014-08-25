@@ -13,6 +13,15 @@ namespace SmartTaxi.iOS
 	partial class InstructionsViewController
 	{
 		[Outlet]
+		MonoTouch.UIKit.UIButton _btn2 { get; set; }
+
+		[Outlet]
+		MonoTouch.UIKit.UIImageView _img1 { get; set; }
+
+		[Outlet]
+		MonoTouch.UIKit.UILabel _text1 { get; set; }
+
+		[Outlet]
 		MonoTouch.UIKit.UIPageControl pager { get; set; }
 
 		[Outlet]
@@ -20,14 +29,29 @@ namespace SmartTaxi.iOS
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (scroll != null) {
-				scroll.Dispose ();
-				scroll = null;
+			if (_btn2 != null) {
+				_btn2.Dispose ();
+				_btn2 = null;
+			}
+
+			if (_img1 != null) {
+				_img1.Dispose ();
+				_img1 = null;
+			}
+
+			if (_text1 != null) {
+				_text1.Dispose ();
+				_text1 = null;
 			}
 
 			if (pager != null) {
 				pager.Dispose ();
 				pager = null;
+			}
+
+			if (scroll != null) {
+				scroll.Dispose ();
+				scroll = null;
 			}
 		}
 	}

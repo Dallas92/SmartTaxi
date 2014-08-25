@@ -47,6 +47,18 @@ namespace SmartTaxi.Models
 		[JsonProperty("city")]
 		public City City{get;set;}
 
+		[JsonProperty("price")]
+		public int price{get;set;}
+
+		[JsonProperty("client_balance")]
+		public int ClientBalance{get;set;}
+
+		[JsonProperty("taxi_rating")]
+		public double Rating{get;set;}
+
+		[JsonProperty("taxi_rating_count")]
+		public int RatingCount{get;set;}
+
 		public Taxi(){
 			this.City = new City();
 		}

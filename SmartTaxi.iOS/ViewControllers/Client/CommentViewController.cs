@@ -26,14 +26,26 @@ namespace SmartTaxi.iOS
 
 			_previewImg.Image = UIImage.FromBundle ("Menu/pen.png");
 			_okBtn.SetImage (UIImage.FromBundle ("Common/ok.png"), UIControlState.Normal);
+			_okBtn.TouchUpInside += (sender, e) => {
+				AppDelegate.Order.Comment = _commentTextView.Text;
+				var vController = (AppDelegate.Storyboard.InstantiateViewController ("Main2ViewController") as UIViewController);
+				this.NavigationController.PushViewController (vController, true);
+			};
 
 			_headerLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
 
 			_commentTextView.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
-
+			_commentTextView.AutocorrectionType = UITextAutocorrectionType.No;
 			_commentTextView.Layer.BorderWidth = 2;
 			_commentTextView.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
 			_commentTextView.TextContainerInset = new UIEdgeInsets (15, 16, 15, 16);
+			_commentTextView.Delegate = new TextViewDelegate ("");
+		}
+
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+			_commentTextView.Text = !string.IsNullOrEmpty(AppDelegate.Order.Comment)?AppDelegate.Order.Comment:"";
 		}
 	}
 }

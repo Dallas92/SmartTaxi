@@ -20,35 +20,60 @@ namespace SmartTaxi.iOS
 
 		public override void ViewDidLoad ()
 		{
+			this.NavigationItem.SetHidesBackButton (true, false);
+
 			this.View.BackgroundColor = UIColor.FromRGB(255,216,0);
 			this.View.BackgroundColor = UIColor.FromRGB (255, 216, 0);
 			this.scrollView.ContentSize = new SizeF (this.View.Frame.Width, 568);
 
+			#region Temp
+			AppDelegate.Taxi = new SmartTaxi.Models.Taxi{
+				ClientBalance = 5000,
+				TaxtFirstname = "Максим",
+				TaxiLastname = "Галкин",
+				TaxiMarka = "BMW",
+				TaxiModel = "X6",
+				TaxiCarnumber = "A666SDM",
+				TaxiPhone = "87711235487",
+				TaxiColor = "черный"
+			};
+			#endregion
 
 			menuItems = new List<MenuItem> { 
 				new MenuItem{ Name = "ЗАКАЗЫ", ImageName = "orders.png", Color = UIColor.FromRGB (255, 216, 0) },
 				new MenuItem{ Name = "НОВЫЙ ЗАКАЗ", ImageName = "order-new.png", Color = UIColor.FromRGB (255, 204, 0) },
 				new MenuItem{ Name = "ОЖИДАНИЕ ОТВЕТА", ImageName = "order-waiting.png", Color = UIColor.FromRGB (255, 185, 1) }, 
 				new MenuItem{ Name = "ПОДТВЕРЖДЕН", ImageName = "order-accepted.png", Color = UIColor.FromRGB (255, 168, 0) }, 
-				new MenuItem{ Name = "5000 Т", ImageName = "money.png", Color = UIColor.FromRGB (255, 144, 0) }, 
-				new MenuItem{ Name = "Владимир Пришвин", ImageName = "id.png", Color = UIColor.FromRGB (255, 133, 0) }
+				new MenuItem{ Name = AppDelegate.Taxi.ClientBalance +  " Т", ImageName = "money.png", Color = UIColor.FromRGB (255, 144, 0) }, 
+				new MenuItem{ Name = AppDelegate.Taxi.TaxiLastname + " " + AppDelegate.Taxi.TaxtFirstname, ImageName = "id.png", Color = UIColor.FromRGB (255, 133, 0) }
 			};
 
-			int index = 0;
-			foreach (var v in this.scrollView.Subviews) {
-				if (v.GetType() != typeof(UIImageView)) {
-					v.BackgroundColor = this.menuItems [index].Color;
-					(v.Subviews [0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [index].ImageName);
-					(v.Subviews [0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
-					(v.Subviews [1] as UITextField).Text = this.menuItems [index].Name;
-					(v.Subviews [1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
-					(v.Subviews [1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
 
+			_block1View.BackgroundColor = this.menuItems [0].Color;
+			(_block1View.Subviews [0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [0].ImageName);
+			(_block1View.Subviews [0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
+			(_block1View.Subviews [1] as UITextField).Text = this.menuItems [0].Name;
+			(_block1View.Subviews [1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
+			(_block1View.Subviews [1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+			AttachAnimation (_block1View, 0);
 
-					AttachAnimation (v, index);
-					index++;
-				}
-			}
+			_block2View.BackgroundColor = this.menuItems [4].Color;
+			(_block2View.Subviews [0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [4].ImageName);
+			(_block2View.Subviews [0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
+			(_block2View.Subviews [1] as UITextField).Text = this.menuItems [4].Name;
+			(_block2View.Subviews [1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
+			(_block2View.Subviews [1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+			AttachAnimation (_block2View, 4);
+
+			_block3View.BackgroundColor = this.menuItems [5].Color;
+			(_block3View.Subviews [0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [5].ImageName);
+			(_block3View.Subviews [0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
+			(_block3View.Subviews [1] as UITextField).Text = this.menuItems [5].Name;
+			(_block3View.Subviews [1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
+			(_block3View.Subviews [1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+			AttachAnimation (_block3View, 5);
+
+			_ordersTableView.Source = new OrdersDataSource (_ordersTableView, AppDelegate.Orders, this.NavigationController);
 		}
 
 
@@ -60,15 +85,6 @@ namespace SmartTaxi.iOS
 
 		private void AttachAnimation(UIView v, int index){
 			UITapGestureRecognizer gestureRecognizer = new UITapGestureRecognizer(()=>{
-//				foreach (var v2 in this.scrollView.Subviews){
-//					v2.Frame = new RectangleF(0,-100,0,0);
-//				}
-
-//				int prevIndex = index - 1;
-//				if(prevIndex>=0){
-//					var prevView = this.scrollView.Subviews.ElementAt(prevIndex);
-//					this.View.BackgroundColor = prevView.BackgroundColor;
-//				}
 
 				//show views
 				if(index<=3){
@@ -93,6 +109,7 @@ namespace SmartTaxi.iOS
 
 			switch (index) {
 			case 0:
+				//page = "OrderInfoViewController";
 				break;
 			case 1:
 				break;
@@ -104,7 +121,7 @@ namespace SmartTaxi.iOS
 				break;
 			case 5:
 				page = "ProfileViewController";
-				animate = false;
+				animate = true;
 				break;
 			}
 

@@ -58,9 +58,6 @@ namespace SmartTaxi.iOS
 		MonoTouch.UIKit.UILabel _numberValueLabel { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton _okBtn { get; set; }
-
-		[Outlet]
 		MonoTouch.UIKit.UIImageView _previewImg { get; set; }
 
 		[Outlet]
@@ -89,16 +86,6 @@ namespace SmartTaxi.iOS
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (_fioLabel != null) {
-				_fioLabel.Dispose ();
-				_fioLabel = null;
-			}
-
-			if (_ratedLabel != null) {
-				_ratedLabel.Dispose ();
-				_ratedLabel = null;
-			}
-
 			if (_backButton != null) {
 				_backButton.Dispose ();
 				_backButton = null;
@@ -117,6 +104,11 @@ namespace SmartTaxi.iOS
 			if (_colorValueLabel != null) {
 				_colorValueLabel.Dispose ();
 				_colorValueLabel = null;
+			}
+
+			if (_fioLabel != null) {
+				_fioLabel.Dispose ();
+				_fioLabel = null;
 			}
 
 			if (_headerLabel != null) {
@@ -169,14 +161,14 @@ namespace SmartTaxi.iOS
 				_numberValueLabel = null;
 			}
 
-			if (_okBtn != null) {
-				_okBtn.Dispose ();
-				_okBtn = null;
-			}
-
 			if (_previewImg != null) {
 				_previewImg.Dispose ();
 				_previewImg = null;
+			}
+
+			if (_ratedLabel != null) {
+				_ratedLabel.Dispose ();
+				_ratedLabel = null;
 			}
 
 			if (_scrollView != null) {

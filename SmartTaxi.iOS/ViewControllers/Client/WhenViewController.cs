@@ -28,8 +28,33 @@ namespace SmartTaxi.iOS
 			_explanationTextView.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,15f);
 
 			_periodPickerView.Model = new PeriodPickerView (this);
-			_periodPickerView.Select (1, 0, false);
-			_periodPickerView.Select (29, 2, false);
+
+
+
+
+			_okBtn.TouchUpInside += (sender, e) => {
+				int hour = int.Parse((_periodPickerView.Model as PeriodPickerView).hourSelected);
+				int minute = int.Parse((_periodPickerView.Model as PeriodPickerView).minuteSelected);
+				AppDelegate.Order.Minutes = hour*60 + minute;
+				var vController = (AppDelegate.Storyboard.InstantiateViewController ("CommentViewController") as UIViewController);
+				this.NavigationController.PushViewController (vController, true);
+			};
+		}
+
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+
+			if (AppDelegate.Order.Minutes == 0) {
+				_periodPickerView.Select (1, 0, false);
+				_periodPickerView.Select (30, 2, false);
+			} else {
+				int hour = AppDelegate.Order.Minutes / 60;
+				int minute = AppDelegate.Order.Minutes % 60;
+
+				_periodPickerView.Select (hour, 0, false);
+				_periodPickerView.Select (minute, 2, false);
+			}
 
 		}
 	}

@@ -14,23 +14,22 @@ namespace SmartTaxi.iOS
 	{
 		private List<MenuItem> menuItems;
 
+		public static int NavPage{ get; set; }
+
 		public MainViewController (IntPtr handle) : base (handle){}
+
 
 
 		public override void ViewDidLoad ()
 		{
+
+
+			this.scrollView.ShowsVerticalScrollIndicator = false;
+			this.NavigationItem.SetHidesBackButton (true, false);
+
+
 			#region TestMethods
-//			Taxi taxi = new Taxi {
-//				TaxtFirstname = "Максим",
-//				TaxiLastname = "Чужой",
-//				TaxiPhone = "77713241540",
-//				TaxiPassword = "пароль",
-//				TaxiMarka = "Audi",
-//				TaxiModel = "A6",
-//				TaxiCarnumber = "x666ASP",
-//				TaxiColor = "4",
-//				City = new City{ CityId = "447055bf-db72-4313-af71-e7a84ae2ccd3", CityName = "Костанай" }
-//			};
+
 //
 			//AppDelegate.API.Taxi.Register (taxi);
 			//AppDelegate.API.Taxi.Login (taxi.TaxiPhone, taxi.TaxiPassword);
@@ -54,8 +53,50 @@ namespace SmartTaxi.iOS
 			//this.View.BackgroundColor = UIColor.FromRGB(255,216,0);
 			#endregion
 
-			this.View.BackgroundColor = UIColor.FromRGB (255, 216, 0);
-			this.scrollView.ContentSize = new SizeF (this.View.Frame.Width, 568);
+//			this.View.BackgroundColor = UIColor.FromRGB (255, 216, 0);
+//			//this.scrollView.ContentSize = new SizeF (this.View.Frame.Width, 568);
+//
+//			menuItems = new List<MenuItem> { 
+//				new MenuItem{ Name = (string.IsNullOrEmpty(AppDelegate.Order.FromAddress) ? "ОТКУДА" : AppDelegate.Order.FromAddress), ImageName = "from.png", Color = UIColor.FromRGB (255, 216, 0) },
+//				new MenuItem{ Name = (string.IsNullOrEmpty(AppDelegate.Order.ToAddress) ? "КУДА" : AppDelegate.Order.ToAddress), ImageName = "to.png", Color = UIColor.FromRGB (255, 204, 0) },
+//				new MenuItem{ Name = (string.IsNullOrEmpty(AppDelegate.Order.ToAddress) ? "КОГДА" :  (AppDelegate.Order.Minutes/60) + " час(ов)" + " " + (AppDelegate.Order.Minutes%60).ToString() + " мин"), ImageName = "when.png", Color = UIColor.FromRGB (255, 185, 1) }, 
+//				new MenuItem{ Name = (string.IsNullOrEmpty(AppDelegate.Order.Comment) ? "ПРИМЕЧАНИЕ" : AppDelegate.Order.Comment), ImageName = "pen.png", Color = UIColor.FromRGB (255, 168, 0) }, 
+//				new MenuItem{ Name = "ВЫЗВАТЬ", ImageName = "car.png", Color = UIColor.FromRGB (255, 144, 0) }, 
+//				new MenuItem{ Name = "Я - ВОДИТЕЛЬ", ImageName = "id.png", Color = UIColor.FromRGB (255, 133, 0) }
+//			};
+//
+//			int index = 0;
+//			foreach (var v in this.scrollView.Subviews) {
+//				if (v.GetType() != typeof(UIImageView) && index!=6) {
+//					v.BackgroundColor = this.menuItems [index].Color;
+//					(v.Subviews [0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [index].ImageName);
+//					(v.Subviews [0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
+//					(v.Subviews[1] as UITextField).Text = this.menuItems [index].Name;
+//					(v.Subviews [1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
+//					(v.Subviews [1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+//
+//					AttachAnimation (v, index);
+//					index++;
+//				}
+//			}
+		}
+
+		public override void ViewWillAppear (bool animated)
+		{
+			this.NavigationController.NavigationBar.Hidden = true;
+
+			base.ViewWillAppear (animated);
+
+			if (NavPage == 1) {
+				Navigate1 ();
+			}
+			if (NavPage == 2) {
+				Navigate2 ();
+			}
+			else if (NavPage == 3) {
+				Navigate3 ();
+			}
+			NavPage = 0;
 
 			menuItems = new List<MenuItem> { 
 				new MenuItem{ Name = "ОТКУДА", ImageName = "from.png", Color = UIColor.FromRGB (255, 216, 0) },
@@ -68,7 +109,7 @@ namespace SmartTaxi.iOS
 
 			int index = 0;
 			foreach (var v in this.scrollView.Subviews) {
-				if (v.GetType() != typeof(UIImageView)) {
+				if (v.GetType() != typeof(UIImageView) && index!=6) {
 					v.BackgroundColor = this.menuItems [index].Color;
 					(v.Subviews [0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [index].ImageName);
 					(v.Subviews [0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
@@ -76,54 +117,50 @@ namespace SmartTaxi.iOS
 					(v.Subviews [1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
 					(v.Subviews [1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
 
-					AttachAnimation (v, index);
+					if (index == 0 || index == 5) {
+						AttachAnimation (v, index);
+					}
 					index++;
 				}
 			}
 		}
 
-		public override void ViewWillAppear (bool animated)
-		{
-			this.NavigationController.NavigationBar.Hidden = true;
-			base.ViewWillAppear (animated);
-		}
-
 		private void AttachAnimation(UIView v, int index){
 			UITapGestureRecognizer gestureRecognizer = new UITapGestureRecognizer(()=>{
 				foreach (var v2 in this.scrollView.Subviews){
-					v2.Frame = new RectangleF(0,-100,0,0);
-				}
 
-//				int prevIndex = index - 1;
-//				if(prevIndex>=0){
-//					var prevView = this.scrollView.Subviews.ElementAt(prevIndex);
-//					this.View.BackgroundColor = prevView.BackgroundColor;
-//				}
+					if(v!=v2){
+						v2.Frame = new RectangleF(0,0,0,0);
+					}else{
+						//show views
+						if(index<=3){
+							double time = 0;
+							if(index==0) time=0d;
+							if(index==1) time=0.3d;
+							if(index==2) time=0.4d;
+							if(index==3) time=0.5d;
 
-				//show views
-				if(index<=3){
-					double time = 0;
-					if(index==0) time=0.2d;
-					if(index==1) time=0.3d;
-					if(index==2) time=0.4d;
-					if(index==3) time=0.5d;
-
-					UIView.Animate(time, 0d,
-						UIViewAnimationOptions.BeginFromCurrentState,
-						() => v.Frame = new RectangleF(0,0,320, this.View.Frame.Height),
-						() => 
-						{
+							UIView.Animate(time, 0d,
+								UIViewAnimationOptions.BeginFromCurrentState,
+								() => v.Frame = new RectangleF(0,94,320, this.View.Frame.Height),
+								() => 
+								{
+									HandleView(v,index);
+								});
+						}
+						//show OK button
+						else if(index==4){
 							HandleView(v,index);
-						});
+						}
+						//show Taxist's interface
+						else if(index==5){
+							HandleView(v,index);
+						}
+					}
 				}
-				//show OK button
-				else if(index==4){
-					HandleView(v,index);
-				}
-				//show Taxist's interface
-				else if(index==5){
-					HandleView(v,index);
-				}
+
+
+
 			});
 			gestureRecognizer.CancelsTouchesInView = true;
 			v.AddGestureRecognizer (gestureRecognizer);
@@ -139,20 +176,31 @@ namespace SmartTaxi.iOS
 				page = "FromViewController";
 				break;
 			case 1:
-				page = "ToViewController";
+				//page = "ToViewController";
 				break;
 			case 2:
-				page = "WhenViewController";
+				//page = "WhenViewController";
 				break;
 			case 3:
-				page = "CommentViewController";
+				//page = "CommentViewController";
 				break;
 			case 4:
-				page = "";
+//				AppDelegate.Order = new Order {
+//					ClientId = AppDelegate.ClientId,
+//					FromAddress = AppDelegate.Order.FromAddress,
+//					ToAddress = AppDelegate.Order.ToAddress,
+//					FromLocation = "52.123124124, 75.123124124",
+//					ToLocation = "52.123124124, 75.123124124",
+//					Comment = AppDelegate.Order.Comment,
+//					Minutes = AppDelegate.Order.Minutes,
+//					CityId = "447055bf-db72-4313-af71-e7a84ae2ccd3"
+//				};
+//				AppDelegate.API.Orders.Create (AppDelegate.Order);
+//				Console.WriteLine ("Order created at: " + DateTime.Now);
+//				page = "ChooseTaxiViewController";
 				break;
 			case 5:
 				page = "AuthViewController";
-				page = "TaxistsViewController";
 				animate = true;
 				break;
 			}
@@ -162,6 +210,20 @@ namespace SmartTaxi.iOS
 
 			var vController = (AppDelegate.Storyboard.InstantiateViewController (page) as UIViewController);
 			this.NavigationController.PushViewController (vController, animate);
+		}
+
+		public void Navigate1(){
+			var vController = (AppDelegate.Storyboard.InstantiateViewController ("AuthViewController") as UIViewController);
+			this.NavigationController.PushViewController (vController, false);
+		}
+		public void Navigate2(){
+			var vController = (AppDelegate.Storyboard.InstantiateViewController ("Auth2ViewController") as UIViewController);
+			this.NavigationController.PushViewController (vController, false);
+		}
+
+		public void Navigate3(){
+			var vController = (AppDelegate.Storyboard.InstantiateViewController ("Auth3ViewController") as UIViewController);
+			this.NavigationController.PushViewController (vController, false);
 		}
 	}
 }

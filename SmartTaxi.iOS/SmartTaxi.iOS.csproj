@@ -51,7 +51,7 @@
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
-    <CodesignProvision>da475aa7-00b6-4aad-baa6-e5a46ab0d1fa</CodesignProvision>
+    <CodesignProvision>1ed23a0c-9fd3-4236-857e-28721162857e</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -118,6 +118,9 @@
     <Reference Include="Microsoft.WindowsAzure.Mobile, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <HintPath>..\Components\azure-mobile-services-1.2.3\lib\ios\Microsoft.WindowsAzure.Mobile.dll</HintPath>
     </Reference>
+    <Reference Include="SDWebImage">
+      <HintPath>..\Components\sdwebimage-3.5.4\lib\ios\SDWebImage.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-568h%402x.png" />
@@ -134,16 +137,9 @@
     <BundleResource Include="Resources\Common\ok.png" />
     <BundleResource Include="Resources\Common\close.png" />
     <BundleResource Include="Resources\car.jpg" />
-    <BundleResource Include="Resources\Map\check.png" />
-    <BundleResource Include="Resources\Map\from.png" />
-    <BundleResource Include="Resources\Map\taxi.png" />
-    <BundleResource Include="Resources\Map\to.png" />
-    <BundleResource Include="Resources\Map\window-big.png" />
-    <BundleResource Include="Resources\Map\window-small.png" />
     <BundleResource Include="Resources\Menu\forget%402x.png" />
     <BundleResource Include="Resources\Menu\register%402x.png" />
     <BundleResource Include="Resources\Menu\order-accepted%402x.png" />
-    <BundleResource Include="Resources\Menu\order-cancel%402x.png" />
     <BundleResource Include="Resources\Menu\order-waiting%402x.png" />
     <BundleResource Include="Resources\Menu\orders%402x.png" />
     <BundleResource Include="Resources\Menu\money%402x.png" />
@@ -161,6 +157,24 @@
     </BundleResource>
     <BundleResource Include="Resources\Common\back.png" />
     <BundleResource Include="Resources\Common\star.png" />
+    <BundleResource Include="Resources\Menu\compass%402x.png" />
+    <BundleResource Include="Resources\Map\taxi%402x.png" />
+    <BundleResource Include="Resources\Map\from%402x.png" />
+    <BundleResource Include="Resources\Map\to%402x.png" />
+    <BundleResource Include="Resources\Map\window-big%402x.png" />
+    <BundleResource Include="Resources\Map\window-small%402x.png" />
+    <BundleResource Include="Resources\Map\check%402x.png" />
+    <BundleResource Include="Resources\Instructions\icon-info%402x.png" />
+    <BundleResource Include="Resources\Instructions\icon-cancel.png" />
+    <BundleResource Include="Resources\Menu\order-cancel.png" />
+    <BundleResource Include="Resources\Menu\attention%402x.png" />
+    <BundleResource Include="Resources\Order\1.png" />
+    <BundleResource Include="Resources\Order\2.png" />
+    <BundleResource Include="Resources\Order\3.png" />
+    <BundleResource Include="Resources\Order\4.png" />
+    <BundleResource Include="Resources\ribaphoto.png" />
+    <BundleResource Include="Resources\Map\timer%402x.png" />
+    <BundleResource Include="Resources\Map\molniya%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -179,7 +193,6 @@
     <Compile Include="Views\MenuCell.designer.cs">
       <DependentUpon>MenuCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataSource\MenuDataSource.cs" />
     <Compile Include="Models\MenuItem.cs" />
     <Compile Include="SQLite\SQLiteHelper.cs" />
     <Compile Include="ViewControllers\TaxistsViewController.cs" />
@@ -223,6 +236,52 @@
       <DependentUpon>ProfileViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Location\LocationManager.cs" />
+    <Compile Include="DataSource\OrdersDataSource.cs" />
+    <Compile Include="ViewControllers\Client\ChooseTaxiViewController.cs" />
+    <Compile Include="ViewControllers\Client\ChooseTaxiViewController.designer.cs">
+      <DependentUpon>ChooseTaxiViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Taxi\RetryCodeViewController.cs" />
+    <Compile Include="ViewControllers\Taxi\RetryCodeViewController.designer.cs">
+      <DependentUpon>RetryCodeViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Taxi\OrderInfoViewController.cs" />
+    <Compile Include="ViewControllers\Taxi\OrderInfoViewController.designer.cs">
+      <DependentUpon>OrderInfoViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Main2ViewController.cs" />
+    <Compile Include="ViewControllers\Main2ViewController.designer.cs">
+      <DependentUpon>Main2ViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\LoadingViewController.cs" />
+    <Compile Include="ViewControllers\LoadingViewController.designer.cs">
+      <DependentUpon>LoadingViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ScreenResolutionUtil.cs" />
+    <Compile Include="Helpers\Reachibility.cs" />
+    <Compile Include="Helpers\TextViewDelegate.cs" />
+    <Compile Include="ViewControllers\Auth2ViewController.cs" />
+    <Compile Include="ViewControllers\Auth2ViewController.designer.cs">
+      <DependentUpon>Auth2ViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\Auth3ViewController.cs" />
+    <Compile Include="ViewControllers\Auth3ViewController.designer.cs">
+      <DependentUpon>Auth3ViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\UIImageHelper.cs" />
+    <Compile Include="Views\qwe.cs" />
+    <Compile Include="Views\PickerMode.cs" />
+    <Compile Include="Models\PickerModelItem.cs" />
+    <Compile Include="ViewControllers\Client\TaxiInfoViewController.cs" />
+    <Compile Include="ViewControllers\Client\TaxiInfoViewController.designer.cs">
+      <DependentUpon>TaxiInfoViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\TrackingViewController.cs" />
+    <Compile Include="ViewControllers\TrackingViewController.designer.cs">
+      <DependentUpon>TrackingViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\GoogleHelper.cs" />
+    <Compile Include="Models\GoogleData.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
@@ -240,6 +299,8 @@
     <Folder Include="ViewControllers\Taxi\" />
     <Folder Include="Resources\Fonts\" />
     <Folder Include="Location\" />
+    <Folder Include="Resources\Order\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SmartTaxi.DAL\SmartTaxi.DAL.csproj">
@@ -265,6 +326,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="azure-mobile-services">
       <Version>1.2.3</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="sdwebimage">
+      <Version>3.5.4</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

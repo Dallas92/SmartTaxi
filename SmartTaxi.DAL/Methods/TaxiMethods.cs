@@ -7,7 +7,7 @@ namespace SmartTaxi.DAL
 {
 	public class TaxiMethods
 	{
-		public void Register(Taxi taxi, Dictionary<string,string> files=null){
+		public int Register(Taxi taxi, Dictionary<string,string> files=null){
 			Dictionary<string,string> parameters = new Dictionary<string, string> ();
 			parameters.Add ("firstname", taxi.TaxtFirstname);
 			parameters.Add ("lastname", taxi.TaxiLastname);
@@ -19,29 +19,28 @@ namespace SmartTaxi.DAL
 			parameters.Add ("autoNumber", taxi.TaxiCarnumber);
 			parameters.Add ("color", taxi.TaxiColor);
 
-			try{
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/WRAD_Register/", parameters, Method.POST, files, taxi);
-			}
-			catch{
-			}
-			//if (json ["meta"]["code"].ToString () == 200.ToString()) {
-			//}
-			//else if (json ["meta"]["code"].ToString () == 500.ToString()) {
-			//}
+			return int.Parse (json ["meta"] ["code"].ToString ());
 		}
 
-		public void Login(string phone,string password){
+		public LoginData Login(string phone,string password){
 			Dictionary<string,string> parameters = new Dictionary<string, string> ();
 			parameters.Add ("username", phone);
 			parameters.Add ("password", password);
 
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/WRAD_Login/", parameters, Method.POST);
+			string str = json.ToString ();
+
+			var data = Newtonsoft.Json.JsonConvert.DeserializeObject<LoginData> (json.ToString());
 
 			if (json ["meta"]["code"].ToString () == 200.ToString()) {
 				APIHelper.taxiId = json ["data"] ["taxist_id"].ToString ();
 			}
 			else if (json ["meta"]["code"].ToString () == 500.ToString()) {
 			}
+
+			return data;
+			//return json ["meta"] ["code"].ToString ();
 		}
 
 		public void Logout(){
@@ -64,7 +63,7 @@ namespace SmartTaxi.DAL
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/ResetPassword/", parameters, Method.POST);
 		}
 
-		public void GetProfile(string id=""){
+		public Taxi GetProfile(string id=""){
 			Dictionary<string,string> parameters = new Dictionary<string, string> ();
 
 			if (string.IsNullOrEmpty (id)) {
@@ -74,7 +73,9 @@ namespace SmartTaxi.DAL
 			}
 
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/GetTaxiProfile/", parameters, Method.POST);
-			var taxi = Newtonsoft.Json.JsonConvert.DeserializeObject<Taxi> (json["data"].ToString ());
+			var str = json.ToString ();
+			var taxi = Newtonsoft.Json.JsonConvert.DeserializeObject<Taxi> (json["data"].ToString());
+			return taxi;
 		}
 
 		public void SetOnline(string coord){
@@ -84,12 +85,40 @@ namespace SmartTaxi.DAL
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/ImHere/", parameters, Method.POST);
 		}
 	
-		public List<Order> GetMyOrders(int status){
+		public List<Order> GetMyOrders(){
 			Dictionary<string,string> parameters = new Dictionary<string, string> ();
 
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/GetMyOrders/", parameters, Method.POST);
 			var orders = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Order>> (json["data"]["orders"].ToString ());
 			return orders;
+		}
+
+		public void SetPrice(string order_id, int price){
+			Dictionary<string,string> parameters = new Dictionary<string, string> ();
+			parameters.Add ("order_id", order_id);
+			parameters.Add ("price", price.ToString());
+
+			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/MakeResponse/", parameters, Method.POST);
+		}
+
+		public void CancelOrder(string order_id){
+			Dictionary<string,string> parameters = new Dictionary<string, string> ();
+			parameters.Add ("order_id", order_id);
+
+			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/SayNo/", parameters, Method.POST);
+		}
+
+		public void DriverCome(string order_id){
+			Dictionary<string,string> parameters = new Dictionary<string, string> ();
+			parameters.Add ("order_id", order_id);
+
+			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/DriverCome/", parameters, Method.POST);
+		}
+
+		public void ResendSMSCode(){
+			Dictionary<string,string> parameters = new Dictionary<string, string> ();
+
+			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/Resend/", parameters, Method.POST);
 		}
 	}
 }

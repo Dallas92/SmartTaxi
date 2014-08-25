@@ -16,18 +16,18 @@ namespace SmartTaxi.iOS
 		MonoTouch.UIKit.UIImageView _previewImg { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UITextField _toTextField { get; set; }
+		MonoTouch.UIKit.UITextView _txtView { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (_txtView != null) {
+				_txtView.Dispose ();
+				_txtView = null;
+			}
+
 			if (_previewImg != null) {
 				_previewImg.Dispose ();
 				_previewImg = null;
-			}
-
-			if (_toTextField != null) {
-				_toTextField.Dispose ();
-				_toTextField = null;
 			}
 		}
 	}

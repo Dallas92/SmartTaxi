@@ -29,7 +29,7 @@
 	<key>UIMainStoryboardFile</key>
 	<string>MainStoryboard</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.smarttaxi</string>
+	<string>com.wakeup.smarttaxi</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Icon</string>

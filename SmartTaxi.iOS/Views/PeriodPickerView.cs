@@ -12,10 +12,10 @@ namespace SmartTaxi.iOS
 		private List<string> hoursHeadList;
 		private List<string> minutesHeadList;
 
-		string hourSelected;
-		string minuteSelected;
-		string hourHeadSelected;
-		string minuteHeadSelected;
+		public string hourSelected;
+		public string minuteSelected;
+		public string hourHeadSelected;
+		public string minuteHeadSelected;
 
 		public PeriodPickerView (UIViewController controller) {
 			this.parentController = controller;
@@ -31,7 +31,7 @@ namespace SmartTaxi.iOS
 
 			this.hourSelected = this.hourstList[1];
 			this.hourHeadSelected = this.hoursHeadList[0];
-			this.minuteSelected = this.minutesList[29];
+			this.minuteSelected = this.minutesList[30];
 			this.minuteHeadSelected = this.minutesHeadList[0];
 		}
 
@@ -73,10 +73,10 @@ namespace SmartTaxi.iOS
 				this.hourSelected = this.hourstList[row];
 				break;
 			case 1:
-				this.minuteSelected = this.hoursHeadList[row];
+				this.hourHeadSelected = this.hoursHeadList[row];
 				break;
 			case 2:
-				this.hourHeadSelected = this.minutesList[row];
+				this.minuteSelected = this.minutesList[row];
 				break;
 			default:
 				this.minuteHeadSelected = this.minutesHeadList[row];

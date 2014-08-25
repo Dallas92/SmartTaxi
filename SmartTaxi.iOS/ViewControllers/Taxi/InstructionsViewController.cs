@@ -18,13 +18,21 @@ namespace SmartTaxi.iOS
 
 		public override void ViewWillAppear (bool animated)
 		{
-			//this.NavigationController.NavigationBar.Hidden = true;
+			this.NavigationController.NavigationBar.Hidden = true;
 		}
 
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			this.NavigationController.NavigationBar.Hidden = true;
+
+			_img1.Image = UIImage.FromBundle ("Instructions/icon-info.png");
+			_btn2.SetImage(UIImage.FromBundle ("Instructions/icon-cancel.png"), UIControlState.Normal);
+			_text1.Text = "Следите за статусами заказов.";
+			_text1.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,20f);
+
+			_btn2.TouchUpInside += (sender, e) => {
+				this.NavigationController.PopViewControllerAnimated(true);
+			};
 
 			this.scroll.DecelerationEnded += this.scroll_DecelerationEnded;
 			this.pager.ValueChanged += this.pager_ValueChanged;
@@ -33,10 +41,10 @@ namespace SmartTaxi.iOS
 			this.scroll.ShowsHorizontalScrollIndicator = false;
 
 			RectangleF pageFrame = this.scroll.Frame;
-			//this.scroll.Frame = new RectangleF (0, 0, this.View.Frame.Width, this.View.Frame.Height-94);
-			this.scroll.ContentSize = new SizeF (pageFrame.Width * 1, pageFrame.Height);
-
-			this.scroll.ContentInset = new UIEdgeInsets (47, 0, 0, 0);
+			this.scroll.Frame = new RectangleF (0, 0, this.View.Frame.Width, pageFrame.Height-94);
+			this.scroll.ContentSize = new SizeF (pageFrame.Width * 4, this.View.Frame.Height);
+			this.scroll.ContentOffset = new PointF (0, 0);
+			this.scroll.PagingEnabled = true;
 
 			this.pages = new UIImageView[4];
 
@@ -79,18 +87,22 @@ namespace SmartTaxi.iOS
 			if (x == x1)
 			{
 				this.pager.CurrentPage = 0;
+				_text1.Text = "Следите за статусами заказов.";
 			} 
 			else if (x == x2)
 			{
 				this.pager.CurrentPage = 1;
+				_text1.Text = "Задайте стоимость поездки.";
 			} 
 			else if (x== x3)
 			{
 				this.pager.CurrentPage = 2;
+				_text1.Text = "Отслеживайте клиента в реальном времени.";
 			} 
 			else
 			{
 				this.pager.CurrentPage = 3;
+				_text1.Text = "Пополняйте баланс в платежных терминалах.";
 			}
 		}
 

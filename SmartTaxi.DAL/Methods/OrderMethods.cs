@@ -15,7 +15,8 @@ namespace SmartTaxi.DAL
 			parameters.Add ("order_to_address", order.ToAddress);
 			parameters.Add ("order_to_location", order.ToLocation);
 			parameters.Add ("order_comment", order.Comment);
-			parameters.Add ("order_time", order.Minutes);
+			parameters.Add ("order_time", order.Minutes.ToString());
+			//parameters.Add ("order_user_phone", "77713241546");
 			parameters.Add ("city_id", order.CityId);
 
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/CreateOrder/", parameters, Method.POST);
@@ -48,6 +49,16 @@ namespace SmartTaxi.DAL
 			parameters.Add ("taxi_id", taxiId);
 
 			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/AddComment/", parameters, Method.POST);
+		}
+
+		public List<Taxi> Processing(string order_id, string city_id ){
+			Dictionary<string,string> parameters = new Dictionary<string, string> ();
+			parameters.Add ("order_id", order_id);
+			parameters.Add ("city_id", city_id);
+
+			var json = APIHelper.Execute ("wrada/method/call/class/WRAD_Login/func/ProcessingOrder/", parameters, Method.GET);
+			var drivers = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Taxi>> (json["data"]["drivers"].ToString ());
+			return drivers;
 		}
 	}
 }

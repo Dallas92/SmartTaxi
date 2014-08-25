@@ -7,11 +7,17 @@ using MonoTouch.UIKit;
 
 using Google.Maps;
 using System.Drawing;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Globalization;
 
 namespace SmartTaxi.iOS
 {
 	public partial class FromViewController : UIViewController
 	{
+		public MapView mapView;
+
 		public FromViewController (IntPtr handle) : base (handle){}
 
 		public override void ViewDidLoad ()
@@ -19,34 +25,93 @@ namespace SmartTaxi.iOS
 			base.ViewDidLoad ();
 
 			AppDelegate.AddGestureRecognizer (this.View);
-			_previewImg.Image = UIImage.FromBundle ("Menu/from.png");
+			_img1.Image = UIImage.FromBundle ("Menu/from.png");
 
-			_fromTextField.AttributedPlaceholder = new NSAttributedString (
-				"ОТКУДА",
-				font: _fromTextField.Font,
-				foregroundColor: UIColor.FromRGB(50,50,50)
-			);
-			_fromTextField.BecomeFirstResponder ();
-			_fromTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
 
+			_txtView.BecomeFirstResponder ();
+			_txtView.AutocorrectionType = UITextAutocorrectionType.No;
 
 			var camera = CameraPosition.FromCamera (
-				latitude: 37.797865, 
-				longitude: -122.402526, 
+				latitude: 53.216040, 
+				longitude: 63.631954, 
 				zoom: 13);
 
-			MapView mapView = MapView.FromCamera (RectangleF.Empty, camera);
+			mapView = MapView.FromCamera (RectangleF.Empty, camera);
 			mapView.Frame = new RectangleF(0,94,this.View.Frame.Width, this.View.Frame.Height-94);
 
+
+			mapView.StartRendering ();
+			this.View.AddSubview (mapView);
+
+			mapView.Tapped += MapTapped;
+			mapView.TappedMarker = (map, marker) => {
+				AppDelegate.Order.FromAddress = _txtView.Text;
+				AppDelegate.Order.FromLocation = marker.Position.Latitude +", "+marker.Position.Longitude;
+				var vController = (AppDelegate.Storyboard.InstantiateViewController ("ToViewController") as UIViewController);
+				this.NavigationController.PushViewController (vController, true);
+				return true;
+			};
+			mapView.SartedDraggingMarker += (sender, e) => {
+				this.View.EndEditing(true);
+			};
+			mapView.EndedDraggingMarker += (sender, e) => {
+				var address = AppDelegate.API.Cities.GetAddressByLocation (e.Marker.Position.Latitude.ToString(), e.Marker.Position.Longitude.ToString());
+				_txtView.Text = address;
+				AppDelegate.Order.FromLocation = e.Marker.Position.Latitude.ToString() +", "+e.Marker.Position.Longitude.ToString();
+			};
+		}
+
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+			_txtView.Text = !string.IsNullOrEmpty(AppDelegate.Order.FromAddress)?AppDelegate.Order.FromAddress:"ОТКУДА";
+			_txtView.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,!string.IsNullOrEmpty(AppDelegate.Order.FromAddress)?16f:25f);
+			_txtView.TextContainer.MaximumNumberOfLines = 2;
+			_txtView.AddObserver (this, new NSString("contentSize"), NSKeyValueObservingOptions.New, IntPtr.Zero);
+			_txtView.Delegate = new TextViewDelegate ("ОТКУДА");
+
+			if (!string.IsNullOrEmpty (AppDelegate.Order.FromLocation)) {
+				mapView.Clear ();
+
+				Google.Maps.Marker marker = new Marker (){
+					Position = new MonoTouch.CoreLocation.CLLocationCoordinate2D (
+						double.Parse(AppDelegate.Order.FromLocation.Split(',')[0].Trim()), 
+						double.Parse(AppDelegate.Order.FromLocation.Split(',')[1].Trim())),
+					Icon = UIImage.FromBundle ("Map/from.png"),
+					Map = mapView,
+					Tappable = true,
+					Draggable = true
+				};
+			}
+		}
+
+		void MapTapped (object sender, GMSCoordEventArgs e)
+		{
+			this.View.EndEditing(true);
+			mapView.Clear ();
+
 			Google.Maps.Marker marker = new Marker (){
-				Position = new MonoTouch.CoreLocation.CLLocationCoordinate2D (37.797860, -122.402520),
+				Position = new MonoTouch.CoreLocation.CLLocationCoordinate2D (e.Coordinate.Latitude	, e.Coordinate.Longitude),
 				Icon = UIImage.FromBundle ("Map/from.png"),
 				Map = mapView,
 				Tappable = true,
 				Draggable = true
 			};
-			mapView.StartRendering ();
-			this.View.AddSubview (mapView);
+
+			var address = AppDelegate.API.Cities.GetAddressByLocation (e.Coordinate.Latitude.ToString(), e.Coordinate.Longitude.ToString());
+			_txtView.Text = address;
+			_txtView.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+
+		}
+
+		public override void ObserveValue (NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
+		{
+			//base.ObserveValue (keyPath, ofObject, change, context);
+			UITextView txtview = ofObject as UITextView;
+			float topoffset =  (txtview.Bounds.Size.Height - txtview.ContentSize.Height * txtview.ZoomScale)/2.0f;
+			topoffset = ( topoffset < 0.0 ? 0.0f : topoffset );
+			txtview.ContentOffset = new PointF(0,-topoffset +3);
+
 		}
 	}
 }

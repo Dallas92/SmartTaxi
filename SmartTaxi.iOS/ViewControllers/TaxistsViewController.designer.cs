@@ -13,10 +13,42 @@ namespace SmartTaxi.iOS
 	partial class TaxistsViewController
 	{
 		[Outlet]
+		MonoTouch.UIKit.UIView _block1View { get; set; }
+
+		[Outlet]
+		MonoTouch.UIKit.UIView _block2View { get; set; }
+
+		[Outlet]
+		MonoTouch.UIKit.UIView _block3View { get; set; }
+
+		[Outlet]
+		MonoTouch.UIKit.UITableView _ordersTableView { get; set; }
+
+		[Outlet]
 		MonoTouch.UIKit.UIScrollView scrollView { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (_block1View != null) {
+				_block1View.Dispose ();
+				_block1View = null;
+			}
+
+			if (_block2View != null) {
+				_block2View.Dispose ();
+				_block2View = null;
+			}
+
+			if (_block3View != null) {
+				_block3View.Dispose ();
+				_block3View = null;
+			}
+
+			if (_ordersTableView != null) {
+				_ordersTableView.Dispose ();
+				_ordersTableView = null;
+			}
+
 			if (scrollView != null) {
 				scrollView.Dispose ();
 				scrollView = null;

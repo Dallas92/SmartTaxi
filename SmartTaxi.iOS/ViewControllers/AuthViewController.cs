@@ -7,24 +7,31 @@ using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using System.Collections.Generic;
 using System.Drawing;
+using SmartTaxi.Models;
+using MonoTouch.CoreAnimation;
+using MonoTouch.ObjCRuntime;
 
 
 namespace SmartTaxi.iOS
 {
 	public partial class AuthViewController : UIViewController
 	{
-		private UIButton btnClose;
+
 		private List<MenuItem> menuItems;
 
-		public AuthViewController (IntPtr handle) : base (handle)
-		{
+		public AuthViewController (IntPtr handle) : base (handle){}
 
-		}
+		public int ActiveView = 0;
 
 		public override void ViewDidLoad ()
 		{
-			this.View.BackgroundColor = UIColor.FromRGB(255,216,0);
+			this.scrollView.ShowsVerticalScrollIndicator = false;
+			this.AutomaticallyAdjustsScrollViewInsets = false;
 
+			UITapGestureRecognizer gestureRecognizer = new UITapGestureRecognizer ();
+			gestureRecognizer.AddTarget (() => View.EndEditing (true));
+			gestureRecognizer.CancelsTouchesInView = true;
+			View.AddGestureRecognizer (gestureRecognizer);
 
 			menuItems = new List<MenuItem> { 
 				new MenuItem{ Name = "Авторизация", ImageName = "id.png", Color = UIColor.FromRGB (255, 216, 0) },
@@ -32,35 +39,185 @@ namespace SmartTaxi.iOS
 				new MenuItem{ Name = "Регистрация", ImageName = "register.png", Color = UIColor.FromRGB (255, 185, 1) }
 			};
 
-			int index = 0;
-			foreach (var v in this.scrollView.Subviews) {
-				if (v.GetType() != typeof(UIImageView)) {
-					if (index < menuItems.Count) {
-						v.BackgroundColor = this.menuItems [index].Color;
-						(v.Subviews [0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [index].ImageName);
-						(v.Subviews [0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
-						(v.Subviews [1] as UITextField).Text = this.menuItems [index].Name;
-						(v.Subviews [1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
-						(v.Subviews [1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+			_view1.Layer.ZPosition = 1;
+			_view2.Layer.ZPosition = 2;
+			_view3.Layer.ZPosition = 3;
 
-						AttachAnimation (v, index);
-						index++;
+			#region 1 section
+			(_view1.Subviews [0] as UIView).BackgroundColor = this.menuItems [0].Color;
+			((_view1.Subviews [0] as UIView).Subviews[0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [0].ImageName);
+			((_view1.Subviews [0] as UIView).Subviews[0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
+			((_view1.Subviews [0] as UIView).Subviews[1] as UITextField).Text = this.menuItems [0].Name;
+			((_view1.Subviews [0] as UIView).Subviews[1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
+			((_view1.Subviews [0] as UIView).Subviews[1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+			AttachAnimation (_view1, 0);
+
+
+			_1phoneLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+
+			_1phoneTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_1phoneTextField.Layer.BorderWidth = 1;
+			_1phoneTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_1passLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+
+			_1passTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_1passTextField.Layer.BorderWidth = 1;
+			_1passTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_1okButton.SetImage (UIImage.FromBundle ("Common/ok.png"), UIControlState.Normal);
+			_1okButton.TouchUpInside += (sender, e) => {
+				this.NavigationController.PushViewController ((AppDelegate.Storyboard.InstantiateViewController ("TaxistsViewController") as UIViewController), true);
+				return;
+				LoginData data = AppDelegate.API.Taxi.Login (_1phoneTextField.Text, _1passTextField.Text);
+
+				if(data.Meta.Code == 200){
+					if(data.Data.NeedToConfirmPhone){
+						this.NavigationController.PushViewController ((AppDelegate.Storyboard.InstantiateViewController ("RetryCodeViewController") as UIViewController), true);
+						return;
 					}
-				}
-			}
 
-			this.btnClose = UIButton.FromType (UIButtonType.Custom);
-			this.btnClose.SetImage (UIImage.FromBundle ("Common/close.png"), UIControlState.Normal);
-			this.btnClose.TouchUpInside += (sender, e) => {
-				var vController = (AppDelegate.Storyboard.InstantiateViewController ("AuthViewController") as AuthViewController);
-				this.NavigationController.PushViewController (vController, false);
+					AppDelegate.Taxi =  AppDelegate.API.Taxi.GetProfile ();
+					AppDelegate.isTaxi = true;
+					this.NavigationController.PushViewController ((AppDelegate.Storyboard.InstantiateViewController ("TaxistsViewController") as UIViewController), true);
+				}else{
+					var alert = new UIAlertView("Ошибка","Проверьте корректность ваших данных",null,"ok");
+					alert.Show();
+				}
 			};
 
-			this.View.AddSubview (this.btnClose);
+			_1phoneTextField.Text = "77713241540";
+			_1passTextField.Text = "пароль";
+			_1passTextField.SecureTextEntry = true;
+			#endregion
 
+			#region 2 section
+			(_view2.Subviews [0] as UIView).BackgroundColor = this.menuItems [1].Color;
+			((_view2.Subviews [0] as UIView).Subviews[0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [1].ImageName);
+			((_view2.Subviews [0] as UIView).Subviews[0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
+			((_view2.Subviews [0] as UIView).Subviews[1] as UITextField).Text = this.menuItems [1].Name;
+			((_view2.Subviews [0] as UIView).Subviews[1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
+			((_view2.Subviews [0] as UIView).Subviews[1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+			AttachAnimation (_view2, 1);
+
+
+
+			_2phoneLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+
+			_2phoneTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_2phoneTextField.Layer.BorderWidth = 1;
+			_2phoneTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_2extraLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,15f);
+
+			_2okButton.SetImage (UIImage.FromBundle ("Common/ok.png"), UIControlState.Normal);
+			_2okButton.TouchUpInside += (sender, e) => {
+				AppDelegate.API.Taxi.ResetPassword(_2phoneTextField.Text);
+			};
+			#endregion
+
+			#region 3 section
+			(_view3.Subviews [0] as UIView).BackgroundColor = this.menuItems [2].Color;
+			((_view3.Subviews [0] as UIView).Subviews[0] as UIImageView).Image = UIImage.FromBundle ("Menu/" + this.menuItems [2].ImageName);
+			((_view3.Subviews [0] as UIView).Subviews[0] as UIImageView).ContentMode = UIViewContentMode.ScaleToFill;
+			((_view3.Subviews [0] as UIView).Subviews[1] as UITextField).Text = this.menuItems [2].Name;
+			((_view3.Subviews [0] as UIView).Subviews[1] as UITextField).Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,25f);
+			((_view3.Subviews [0] as UIView).Subviews[1] as UITextField).TextColor = UIColor.FromRGB (50, 50, 50);
+			AttachAnimation (_view3, 2);
+
+
+			_3InfoLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+
+			_3nameLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3nameTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3nameTextField.Layer.BorderWidth = 1;
+			_3nameTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3surnameLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3surnameTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3surnameTextField.Layer.BorderWidth = 1;
+			_3surnameTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3phoneLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3phoneTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3phoneTextField.Layer.BorderWidth = 1;
+			_3phoneTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3passLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3passTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3passTextField.Layer.BorderWidth = 1;
+			_3passTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3passAgainLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3passAgainTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3passAgainTextField.Layer.BorderWidth = 1;
+			_3passAgainTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3cityLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3cityTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3cityTextField.Layer.BorderWidth = 1;
+			_3cityTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3otherButton.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,20f);
+			_3otherButton.Layer.BackgroundColor = UIColor.Clear.CGColor;
+			_3otherButton.Layer.BorderWidth = 2;
+			_3otherButton.Layer.BorderColor = AppDelegate.AppColorYellow.CGColor;
+			_3otherButton.TouchUpInside += (sender, e) => {
+
+			};
+
+			_3markaLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3markaTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3markaTextField.Layer.BorderWidth = 1;
+			_3markaTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3modelLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3modelTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3modelTextField.Layer.BorderWidth = 1;
+			_3modelTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3autonumberLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3autonumberTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3autonumberTextField.Layer.BorderWidth = 1;
+			_3autonumberTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3colorLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3colorTextField.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,18f);
+			_3colorTextField.Layer.BorderWidth = 1;
+			_3colorTextField.Layer.BorderColor = UIColor.FromRGB (255,216,0).CGColor;
+
+			_3photoLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3uploadButton.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,20f);
+			_3uploadButton.Layer.BackgroundColor = UIColor.Clear.CGColor;
+			_3uploadButton.Layer.BorderWidth = 2;
+			_3uploadButton.Layer.BorderColor = AppDelegate.AppColorYellow.CGColor;
+			_3uploadButton.TouchUpInside += (sender, e) => {
+
+			};
+
+			_3agreenmentLabel.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,16f);
+			_3readButton.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,20f);
+			_3readButton.Layer.BackgroundColor = UIColor.Clear.CGColor;
+			_3readButton.Layer.BorderWidth = 2;
+			_3readButton.Layer.BorderColor = AppDelegate.AppColorYellow.CGColor;
+			_3readButton.TouchUpInside += (sender, e) => {
+
+			};
+			_3agreeButton.Font = UIFont.FromName (AppDelegate.FontRobotoCondensedLight,20f);
+			_3agreeButton.Layer.BackgroundColor = UIColor.Clear.CGColor;
+			_3agreeButton.Layer.BorderWidth = 2;
+			_3agreeButton.Layer.BorderColor = AppDelegate.AppColorYellow.CGColor;
+			_3agreeButton.TouchUpInside += (sender, e) => {
+
+			};
+
+			_okButton.SetImage (UIImage.FromBundle ("Common/ok.png"), UIControlState.Normal);
+			_okButton.TouchUpInside += (sender, e) => {
+
+			};
+			#endregion
 
 		}
-
 
 		public override void ViewWillAppear (bool animated)
 		{
@@ -69,76 +226,75 @@ namespace SmartTaxi.iOS
 		}
 
 		private void AttachAnimation(UIView v, int index){
+
 			UITapGestureRecognizer gestureRecognizer = new UITapGestureRecognizer(()=>{
-				foreach (var v2 in this.View.Subviews){
-					v2.Frame = new RectangleF(0,-100,0,0);
-				}
+				double time = 0;
 
-//				int prevIndex = index - 1;
-//				if(prevIndex>=0){
-//					var prevView = this.View.Subviews.ElementAt(prevIndex);
-//					this.View.BackgroundColor = prevView.BackgroundColor;
-//				}
 
-				double time = 0.5;
-				if(index==0)time = 0;
-				if(index==0)time = 0.2d;
-
-				//show views
-				if(index<=3){
-					UIView.Animate(time, 0d,
-						UIViewAnimationOptions.BeginFromCurrentState,
-						() => v.Frame = new RectangleF(0,0,320, this.View.Frame.Height),
-						() => 
-						{
-							HandleView(v,index);
+				switch (index) {
+					case 0:
+						time = 0.5;
+						UIView.Animate(	
+							time, 
+							0d,
+							UIViewAnimationOptions.BeginFromCurrentState,
+							Action1,
+						()=>{
+							MainViewController.NavPage = 1;
+							this.NavigationController.PopViewControllerAnimated (false);
 						});
+						break;
+					case 1:
+						time = 0.5;
+						UIView.Animate(
+							time, 
+							0d,
+							UIViewAnimationOptions.BeginFromCurrentState,
+							Action2,
+						()=>{
+							MainViewController.NavPage = 2;
+							this.NavigationController.PopViewControllerAnimated (false);
+						});
+						break;
+					case 2:
+						time = 0.5;
+						UIView.Animate(
+							time, 
+							0d,
+							UIViewAnimationOptions.BeginFromCurrentState,
+							Action3,
+						()=>{
+							MainViewController.NavPage = 3;
+							this.NavigationController.PopViewControllerAnimated (false);
+						});
+
+						break;
 				}
+
 			});
-			gestureRecognizer.CancelsTouchesInView = true;
+
+			//gestureRecognizer.AddTarget (() => View.EndEditing (true));
+			//gestureRecognizer.CancelsTouchesInView = false;
 			v.AddGestureRecognizer (gestureRecognizer);
 		}
 
-		private void HandleView(UIView v, int index){
-			switch (index) {
-			case 0:
-				v.AddSubview (new AuthLoginView (new RectangleF (0, 90, v.Frame.Width, v.Frame.Height - 90), this));
-				break;
-			case 1:
-				v.AddSubview (new RestorePassView (new RectangleF(0,90,v.Frame.Width,v.Frame.Height - 90)));
-				break;
-			case 2:
-				v.AddSubview (new RegistrationView (new RectangleF(0,90,v.Frame.Width,v.Frame.Height - 90)));
-				break;
-			}
-			v.RemoveGestureRecognizer (v.GestureRecognizers [0]);
-
-			UITapGestureRecognizer gestureRecognizer = new UITapGestureRecognizer ();
-			gestureRecognizer.AddTarget (() => v.EndEditing (true));
-			gestureRecognizer.CancelsTouchesInView = true;
-			v.AddGestureRecognizer (gestureRecognizer);
-
-			this.btnClose.Frame = new RectangleF (v.Frame.Width - 47, 32, 32, 32);
+		private void Action1(){
+			_view1.Frame = new RectangleF (0, 0, this.View.Frame.Width, 380);
+			_view2.Frame = new RectangleF(0,380,this.View.Frame.Width,94);
+			_view3.Frame = new RectangleF (0, 474, this.View.Frame.Width, 94);
 		}
 
-//		private void ToDefaults(){
-//			this.btnClose.Frame = new RectangleF(0,0,0,0);
-//
-//			int index = 0;
-//
-//			foreach (var v in this.View.Subviews) {
-//				if (v.GetType ()== typeof(UIView)) {
-//					v.Frame = new RectangleF (0, index * 90, this.View.Frame.Width, 90);
-//					index ++;
-//					foreach (var v2 in v.Subviews.Where(a=>a.Subviews.Count()>1)){
-//						//if (v2.GetType() == typeof(UIView)) {
-//							v2.RemoveFromSuperview ();
-//						//}
-//					}
-//				}
-//			}
-//
-//			this.View.BackgroundColor = UIColor.FromRGB(255,216,0);
-//		}
+		private void Action2(){
+			_view1.Frame = new RectangleF (0, 0, this.View.Frame.Width, 94);
+			_view2.Frame = new RectangleF (0, 93, this.View.Frame.Width, 380);
+			_view3.Frame = new RectangleF (0, 474, this.View.Frame.Width, 94);
+		}
+
+		private void Action3(){
+			_view1.Frame = new RectangleF (0, 0, this.View.Frame.Width, 94);
+			_view2.Frame = new RectangleF (0, 94, this.View.Frame.Width, 94);
+			_view3.Frame = new RectangleF (0, 188, this.View.Frame.Width, 1500);
+			scrollView.ContentSize = new SizeF (0, 1500 + 188);
+		}
 	}
 }

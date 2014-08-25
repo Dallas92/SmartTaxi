@@ -13,21 +13,21 @@ namespace SmartTaxi.iOS
 	partial class FromViewController
 	{
 		[Outlet]
-		MonoTouch.UIKit.UITextField _fromTextField { get; set; }
+		MonoTouch.UIKit.UIImageView _img1 { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIImageView _previewImg { get; set; }
+		MonoTouch.UIKit.UITextView _txtView { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (_fromTextField != null) {
-				_fromTextField.Dispose ();
-				_fromTextField = null;
+			if (_txtView != null) {
+				_txtView.Dispose ();
+				_txtView = null;
 			}
 
-			if (_previewImg != null) {
-				_previewImg.Dispose ();
-				_previewImg = null;
+			if (_img1 != null) {
+				_img1.Dispose ();
+				_img1 = null;
 			}
 		}
 	}
